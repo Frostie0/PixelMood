@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PixelMood 🎨
 
-## Getting Started
+Une application d'analyse de sentiment alimentée par l'IA pour analyser les commentaires et déterminer leur tonalité émotionnelle.
 
-First, run the development server:
+![License](https://img.shields.io/badge/license-Proprietary-orange)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![React](https://img.shields.io/badge/React-18-blue)
+
+## 📋 Description
+
+PixelMood utilise l'intelligence artificielle de HuggingFace pour analyser le sentiment des commentaires textuels et des images contenant du texte. L'application peut détecter si un commentaire est positif, négatif ou neutre avec un score de confiance.
+
+## ✨ Fonctionnalités
+
+- 🤖 **Analyse de sentiment par IA** - Utilise des modèles avancés de HuggingFace
+- 📸 **Extraction de texte depuis images** - OCR intégré pour analyser les captures d'écran
+- 🎯 **Score de confiance** - Affiche la précision de l'analyse
+- 📊 **Export JSON** - Exportez vos résultats en format JSON
+- 🎨 **Interface moderne** - Design épuré avec Tailwind CSS et police Poppins
+- 🌙 **Thème sombre** - Palette de couleurs neutral et orange
+
+## 🛠️ Technologies utilisées
+
+- **Next.js 14** - Framework React avec App Router
+- **React 18** - Bibliothèque UI
+- **HuggingFace Inference** - Modèles d'IA pour l'analyse de sentiment
+- **Tailwind CSS** - Framework CSS utilitaire
+- **Lucide React** - Icônes modernes
+- **shadcn/ui** - Composants UI réutilisables
+
+## 📦 Installation
 
 ```bash
+# Cloner le repository
+git clone https://github.com/[votre-username]/pixelmood.git
+
+# Naviguer dans le dossier
+cd pixelmood
+
+# Installer les dépendances
+npm install
+
+# Lancer le serveur de développement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🔑 Configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Obtenez une clé API HuggingFace**
+   - Créez un compte sur [huggingface.co](https://huggingface.co)
+   - Allez dans Settings → Access Tokens
+   - Créez un nouveau token avec les permissions de lecture
 
-## Learn More
+2. **Configurez les variables d'environnement**
+   ```bash
+   # Copiez le fichier d'exemple
+   cp env.example .env.local
+   
+   # Éditez .env.local et ajoutez votre clé API
+   NEXT_PUBLIC_HUGGINGFACE_API_KEY=votre_clé_api_ici
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Redémarrez le serveur de développement**
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+⚠️ **Important** : Ne commitez JAMAIS le fichier `.env.local` ! Il est déjà dans le `.gitignore`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Utilisation
 
-## Deploy on Vercel
+1. **Entrez un commentaire** dans la zone de texte
+2. **Ou joignez une image** contenant du texte
+3. **Cliquez sur Envoyer** ou appuyez sur Entrée
+4. **Consultez les résultats** avec le sentiment détecté et le score de confiance
+5. **Exportez en JSON** si nécessaire
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 👥 Équipe
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Jens Joe Gladimyr MILFORT** - Développeur principal
+- **Christan Denison VICTOR** - Développeur
+- **Julie Victoria Florine FRANKLIN** - Développeur
+
+## 📄 Licence
+
+Ce projet est sous licence propriétaire. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+**Restrictions importantes :**
+- ✅ Vous pouvez consulter et étudier le code
+- ✅ Vous pouvez utiliser l'application à des fins personnelles
+- ❌ Vous ne pouvez PAS modifier le code sans autorisation
+- ❌ Vous ne pouvez PAS distribuer de versions modifiées
+- ❌ Vous ne pouvez PAS utiliser ce code à des fins commerciales
+
+## 🤝 Contributions
+
+Les contributions sont **restreintes aux membres autorisés** de l'équipe PixelMood uniquement.
+
+Si vous souhaitez signaler un bug ou suggérer une amélioration, veuillez ouvrir une issue.
+
+## 📞 Contact
+
+Pour toute question ou demande de permission, contactez l'équipe PixelMood.
+
+---
+
+**© 2025 PixelMood Team. Tous droits réservés.**
