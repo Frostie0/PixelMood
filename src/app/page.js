@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { HfInference } from '@huggingface/inference';
+import { createWorker } from 'tesseract.js';
 import { Paperclip, Send, Loader2, X, Copy, Check, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -25,8 +26,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
-  const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY || '');
+  const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY);
   const [copied, setCopied] = useState(false);
+  const [extractionStatus, setExtractionStatus] = useState('');
   const fileInputRef = useRef(null);
 
   // Fonction pour gérer la sélection d'image
@@ -46,29 +48,57 @@ export default function Home() {
   const handleRemoveImage = () => {
     setSelectedImage(null);
     setImagePreview(null);
+    setExtractionStatus('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  // Fonction pour extraire le texte de l'image avec HuggingFace
+  // Fonction pour extraire le texte de l'image avec Tesseract.js
   const extractTextFromImage = async (imageFile) => {
+    let worker;
+    
     try {
-      const hf = new HfInference(apiKey);
-
-      // Convertir l'image en blob
-      const imageBlob = await imageFile.arrayBuffer();
-
-      // Utiliser le modèle OCR de HuggingFace
-      const result = await hf.imageToText({
-        data: imageBlob,
-        model: 'Salesforce/blip-image-captioning-large'
+      setExtractionStatus('Initialisation de Tesseract...');
+      
+      // Créer le worker avec support français et anglais (syntaxe v5)
+      worker = await createWorker('fra+eng', 1, {
+        logger: (m) => {
+          // Afficher la progression pendant la reconnaissance
+          if (m.status === 'recognizing text') {
+            const progress = Math.round(m.progress * 100);
+            setExtractionStatus(`Extraction du texte... ${progress}%`);
+          } else if (m.status === 'loading tesseract core') {
+            setExtractionStatus('Chargement du moteur OCR...');
+          } else if (m.status === 'loading language traineddata') {
+            setExtractionStatus('Chargement des langues (FR/EN)...');
+          }
+        }
       });
-
-      return result.generated_text || '';
+      
+      setExtractionStatus('Analyse de l\'image en cours...');
+      
+      // Convertir le fichier en URL pour Tesseract
+      const imageUrl = URL.createObjectURL(imageFile);
+      
+      // Extraire le texte
+      const { data } = await worker.recognize(imageUrl);
+      
+      // Nettoyer l'URL créée
+      URL.revokeObjectURL(imageUrl);
+      
+      setExtractionStatus('Texte extrait avec succès !');
+      
+      // Retourner le texte extrait
+      return data.text || '';
     } catch (err) {
-      console.error('Erreur extraction texte:', err);
-      throw new Error('Impossible d\'extraire le texte de l\'image');
+      console.error('Erreur extraction texte avec Tesseract:', err);
+      throw new Error('Impossible d\'extraire le texte de l\'image. Assurez-vous que l\'image contient du texte lisible.');
+    } finally {
+      // Toujours terminer le worker pour libérer la mémoire
+      if (worker) {
+        await worker.terminate();
+      }
     }
   };
 
@@ -104,6 +134,7 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
     setResults(null);
+    setExtractionStatus('');
 
     try {
       if (!apiKey) {
@@ -115,8 +146,17 @@ export default function Home() {
       // Si une image est sélectionnée, extraire le texte
       if (selectedImage) {
         const extractedText = await extractTextFromImage(selectedImage);
+        
+        if (!extractedText || extractedText.trim().length === 0) {
+          throw new Error('Aucun texte détecté dans l\'image. Assurez-vous que l\'image contient du texte clair.');
+        }
+
         // Diviser le texte en lignes/commentaires
-        const lines = extractedText.split('\n').filter(line => line.trim());
+        const lines = extractedText
+          .split(/[\n\r]+/)
+          .map(line => line.trim())
+          .filter(line => line.length > 3); // Filtrer les lignes trop courtes
+        
         comments = lines.length > 0 ? lines : [extractedText];
       }
 
@@ -126,14 +166,16 @@ export default function Home() {
       }
 
       if (comments.length === 0) {
-        throw new Error('Veuillez entrer un commentaire ou joindre une image');
+        throw new Error('Veuillez entrer un commentaire ou joindre une image avec du texte');
       }
 
       // Analyser le sentiment de chaque commentaire
       const sentimentResults = [];
+      setExtractionStatus(`Analyse de ${comments.length} commentaire(s)...`);
 
-      for (const comment of comments) {
-        const analysis = await analyzeSentiment(comment);
+      for (let i = 0; i < comments.length; i++) {
+        setExtractionStatus(`Analyse du commentaire ${i + 1}/${comments.length}...`);
+        const analysis = await analyzeSentiment(comments[i]);
         sentimentResults.push(analysis);
       }
 
@@ -146,9 +188,11 @@ export default function Home() {
       setCommentText('');
       setSelectedImage(null);
       setImagePreview(null);
+      setExtractionStatus('');
 
     } catch (err) {
       setError(err.message);
+      setExtractionStatus('');
     } finally {
       setIsLoading(false);
     }
@@ -181,7 +225,20 @@ export default function Home() {
           {/* Error Display */}
           {error && (
             <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-300 backdrop-blur-sm">
-              {error}
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Extraction Status */}
+          {isLoading && extractionStatus && (
+            <div className="mb-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-4 w-4 animate-spin text-orange-400 flex-shrink-0" />
+                <p className="text-sm text-orange-200">{extractionStatus}</p>
+              </div>
             </div>
           )}
 
@@ -292,6 +349,15 @@ export default function Home() {
                 </div>
               )}
 
+              {/* Input file caché pour la sélection d'image */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageSelect}
+                accept="image/*"
+                className="hidden"
+              />
+
               {/* Input avec boutons intégrés */}
               <div className="flex w-full gap-6">
                 <InputGroup className="relative">
@@ -314,7 +380,9 @@ export default function Home() {
                   {/* Paperclip en bas à gauche */}
                   <InputGroupAddon className="absolute bottom-2 left-2">
                     <InputGroupButton
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={() => {
+                        fileInputRef.current?.click();
+                      }}
                       size="sm"
                       variant="ghost"
                       className="text-neutral-400 hover:text-orange-400 hover:bg-orange-500/10">

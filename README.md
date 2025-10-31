@@ -1,4 +1,4 @@
-# PixelMood 🎨
+# PixelMood
 
 Une application d'analyse de sentiment alimentée par l'IA pour analyser les commentaires et déterminer leur tonalité émotionnelle.
 
@@ -6,20 +6,20 @@ Une application d'analyse de sentiment alimentée par l'IA pour analyser les com
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 ![React](https://img.shields.io/badge/React-18-blue)
 
-## 📋 Description
+## Description
 
 PixelMood utilise l'intelligence artificielle de HuggingFace pour analyser le sentiment des commentaires textuels et des images contenant du texte. L'application peut détecter si un commentaire est positif, négatif ou neutre avec un score de confiance.
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
-- 🤖 **Analyse de sentiment par IA** - Utilise des modèles avancés de HuggingFace
-- 📸 **Extraction de texte depuis images** - OCR intégré pour analyser les captures d'écran
-- 🎯 **Score de confiance** - Affiche la précision de l'analyse
-- 📊 **Export JSON** - Exportez vos résultats en format JSON
-- 🎨 **Interface moderne** - Design épuré avec Tailwind CSS et police Poppins
-- 🌙 **Thème sombre** - Palette de couleurs neutral et orange
+- **Analyse de sentiment par IA** - Utilise des modèles avancés de HuggingFace
+- **Extraction de texte depuis images** - OCR intégré pour analyser les captures d'écran
+- **Score de confiance** - Affiche la précision de l'analyse
+- **Export JSON** - Exportez vos résultats en format JSON
+- **Interface moderne** - Design épuré avec Tailwind CSS et police Poppins
+- **Thème sombre** - Palette de couleurs neutral et orange
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 - **Next.js 14** - Framework React avec App Router
 - **React 18** - Bibliothèque UI
@@ -28,7 +28,7 @@ PixelMood utilise l'intelligence artificielle de HuggingFace pour analyser le se
 - **Lucide React** - Icônes modernes
 - **shadcn/ui** - Composants UI réutilisables
 
-## 📦 Installation
+## Installation
 
 ```bash
 # Cloner le repository
@@ -46,7 +46,7 @@ npm run dev
 
 Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-## 🔑 Configuration
+## Configuration
 
 1. **Obtenez une clé API HuggingFace**
    - Créez un compte sur [huggingface.co](https://huggingface.co)
@@ -69,7 +69,7 @@ Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
 ⚠️ **Important** : Ne commitez JAMAIS le fichier `.env.local` ! Il est déjà dans le `.gitignore`.
 
-## 🚀 Utilisation
+## Utilisation
 
 1. **Entrez un commentaire** dans la zone de texte
 2. **Ou joignez une image** contenant du texte
@@ -77,13 +77,13 @@ Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 4. **Consultez les résultats** avec le sentiment détecté et le score de confiance
 5. **Exportez en JSON** si nécessaire
 
-## 👥 Équipe
+## Équipe
 
 - **Jens Joe Gladimyr MILFORT** - Développeur principal
 - **Christan Denison VICTOR** - Développeur
 - **Julie Victoria Florine FRANKLIN** - Développeur
 
-## 📄 Licence
+## Licence
 
 Ce projet est sous licence propriétaire. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
@@ -94,13 +94,13 @@ Ce projet est sous licence propriétaire. Voir le fichier [LICENSE](LICENSE) pou
 - ❌ Vous ne pouvez PAS distribuer de versions modifiées
 - ❌ Vous ne pouvez PAS utiliser ce code à des fins commerciales
 
-## 🤝 Contributions
+## Contributions
 
 Les contributions sont **restreintes aux membres autorisés** de l'équipe PixelMood uniquement.
 
 Si vous souhaitez signaler un bug ou suggérer une amélioration, veuillez ouvrir une issue.
 
-## 📞 Contact
+## Contact
 
 Pour toute question ou demande de permission, contactez l'équipe PixelMood.
 
